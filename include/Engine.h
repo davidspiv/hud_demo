@@ -83,8 +83,8 @@ void Engine::input()
 
 void Engine::update()
 {
-    board.update_turret_placement_feedback(mouse_pos, turret_button.turret_selected);
-    turret_button.update(mouse_pos, mouse_clicked);
+    board.update(mouse_pos);
+    turret_button.update();
 }
 
 void Engine::draw()

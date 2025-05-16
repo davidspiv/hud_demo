@@ -28,7 +28,7 @@ struct Board {
 
     int get_hovered_tile_idx(sf::Vector2i const mouse_pos);
 
-    void update_turret_placement_feedback(sf::Vector2i const& mouse_pos, bool turret_selected);
+    void update(sf::Vector2i const& mouse_pos);
 };
 
 Board::Board()
@@ -95,7 +95,7 @@ int Board::get_hovered_tile_idx(sf::Vector2i const mouse_pos)
     return -1;
 }
 
-void Board::update_turret_placement_feedback(sf::Vector2i const& mouse_pos, bool turret_selected)
+void Board::update(sf::Vector2i const& mouse_pos)
 {
     int old_idx = hovered_tile_idx;
     hovered_tile_idx = get_hovered_tile_idx(mouse_pos);
@@ -106,7 +106,7 @@ void Board::update_turret_placement_feedback(sf::Vector2i const& mouse_pos, bool
 
     if (hovered_tile_idx >= 0) {
         Tile& tile = m_tiles[hovered_tile_idx];
-        if (turret_selected && tile.m_role == EMPTY) {
+        if (tile.m_role == EMPTY) {
             tile.m_top_face.setFillColor(
                 tile.color_turret_placement_approved); // highlight buildable
         }

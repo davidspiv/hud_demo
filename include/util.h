@@ -6,17 +6,6 @@
 #include <cmath>
 #include <iostream>
 
-inline float angle_to(sf::Vector2f const& from, sf::Vector2f const& to)
-{
-    sf::Vector2f dir = to - from;
-    return std::atan2(dir.y, dir.x);
-}
-
-inline float shortest_angle_delta(float from, float to)
-{
-    return std::fmod(to - from + 3.f * M_PI, 2.f * M_PI) - M_PI;
-}
-
 inline float calc_dist(sf::Vector2f const coord_a, sf::Vector2f const coord_b)
 {
     sf::Vector2f mag = coord_b - coord_a;
@@ -42,12 +31,14 @@ inline sf::CircleShape build_circle(sf::Vector2f const pos, sf::Color color, flo
 }
 
 inline sf::VertexArray build_primitive_rounded_rect(sf::Vector2f const pos, sf::Vector2f const size,
-    sf::Color const color, float const radius = 20.f, std::size_t const cornerResolution = 8)
+    float const radius = 20.f, std::size_t const cornerResolution = 8)
 {
+    sf::Color const buttonColor = sf::Color::White;
+
     sf::VertexArray vertices(sf::TriangleFan);
 
     sf::Vector2f turret_center = pos + size * 0.5f;
-    vertices.append(sf::Vertex(turret_center, color)); // Turret_center of fan
+    vertices.append(sf::Vertex(turret_center, buttonColor)); // Turret_center of fan
 
     std::vector<sf::Vector2f> arcPoints;
 
@@ -72,9 +63,9 @@ inline sf::VertexArray build_primitive_rounded_rect(sf::Vector2f const pos, sf::
 
     // Append arc points to vertex array
     for (auto const& pt : arcPoints) {
-        vertices.append(sf::Vertex(pt, color));
+        vertices.append(sf::Vertex(pt, buttonColor));
     }
-    vertices.append(vertices[2]); // close off turret
+    vertices.append(vertices[1]); // close off turret
 
     return vertices;
 }

@@ -6,48 +6,45 @@
 #include <cmath>
 
 struct Button {
+
+    enum ButtonState { NORMAL, HOVERED, PRESSED };
+
     sf::Vector2f size;
     sf::Vector2f pos;
+    ButtonState state;
     sf::VertexArray shape;
-    sf::Color color_norm = sf::Color(189, 181, 155);
-    sf::Color color_pressed = sf::Color(112, 107, 92);
-    bool turret_selected = false;
-    bool was_hovered = false;
 
     Button(sf::Vector2f const pos)
         : size(100.f, 100.f)
-        , pos(pos)
+        , pos({ pos.x - size.x * 0.5f, pos.y - size.y * 0.5f })
+        , state(NORMAL)
+        , shape(build_primitive_rounded_rect(pos, size))
     {
-        shape = build_primitive_rounded_rect(pos, size, color_norm);
-        set_fill_color(color_norm);
     }
 
-    bool is_hovered(sf::Vector2i const& mouse_pos) const
-    {
-        return shape.getBounds().contains(static_cast<sf::Vector2f>(mouse_pos));
-    }
-
-    void set_fill_color(sf::Color const& color)
-    {
-        for (std::size_t i = 0; i < shape.getVertexCount(); ++i) {
-            shape[i].color = color;
-        }
-    }
-
-    void update(sf::Vector2i const& mouse_pos, bool clicked)
-    {
-        if (!is_hovered(mouse_pos) && clicked) {
-            set_fill_color(color_norm);
-            turret_selected = false;
-
-        } else if (turret_selected || (is_hovered(mouse_pos) && clicked)) {
-
-            set_fill_color(color_pressed);
-            turret_selected = true;
-            was_hovered = true;
-
-        } else if (was_hovered) {
-            set_fill_color(color_norm);
-        }
-    }
+    void update();
 };
+
+inline void Button::update()
+{
+    sf::Color newColor;
+
+    switch (state) {
+    case NORMAL:
+        newColor = sf::Color(10, 10, 10);
+        break;
+    case HOVERED:
+        newColor = sf::Color(50, 50, 50);
+        break;
+    case PRESSED:
+        newColor = sf::Color(200, 200, 200);
+        break;
+
+    default:
+        throw std::runtime_error("unknown button state");
+    }
+
+    for (size_t i = 0; i < shape.getVertexCount(); i++) {
+        shape[i].color = newColor;
+    }
+}
