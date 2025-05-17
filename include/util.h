@@ -37,29 +37,27 @@ inline sf::VertexArray build_primitive_rounded_rect(sf::Vector2f const pos, sf::
 
     sf::VertexArray vertices(sf::TriangleFan);
 
-    sf::Vector2f turret_center = pos + size * 0.5f;
-    vertices.append(sf::Vertex(turret_center, buttonColor)); // Turret_center of fan
+    sf::Vector2f center = pos + size * 0.5f;
+    vertices.append(sf::Vertex(center, buttonColor)); // Center of fan
 
     std::vector<sf::Vector2f> arcPoints;
 
     // Generate arc points for each corner
-    auto arc = [&](sf::Vector2f cornerTurret_center, float startAngleRad) {
+    auto arc = [&](sf::Vector2f corner_foc, float startAngleRad) {
         for (std::size_t i = 0; i <= cornerResolution; ++i) {
             float const angle
                 = startAngleRad + M_PI / 2.f * static_cast<float>(i) / cornerResolution;
-            float const x = cornerTurret_center.x + std::cos(angle) * radius;
-            float const y = cornerTurret_center.y + std::sin(angle) * radius;
+            float const x = corner_foc.x + std::cos(angle) * radius;
+            float const y = corner_foc.y + std::sin(angle) * radius;
             arcPoints.emplace_back(x, y);
         }
     };
 
     // Generate corner arcs clockwise
-    arc(pos + sf::Vector2f(radius, radius), M_PI); // Top-left
-    arc(pos + sf::Vector2f(size.x - radius, radius),
-        1.5f * M_PI); // Top-right
-    arc(pos + sf::Vector2f(size.x - radius, size.y - radius),
-        0.f);                                                      // Bottom-right
-    arc(pos + sf::Vector2f(radius, size.y - radius), 0.5f * M_PI); // Bottom-left
+    arc(pos + sf::Vector2f(radius, radius), M_PI);                  // Top-left
+    arc(pos + sf::Vector2f(size.x - radius, radius), 1.5f * M_PI);  // Top-right
+    arc(pos + sf::Vector2f(size.x - radius, size.y - radius), 0.f); // Bottom-right
+    arc(pos + sf::Vector2f(radius, size.y - radius), 0.5f * M_PI);  // Bottom-left
 
     // Append arc points to vertex array
     for (auto const& pt : arcPoints) {

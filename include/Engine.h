@@ -31,23 +31,24 @@ Engine::Engine()
     : mouse_clicked(false)
     , mouse_pos(sf::Vector2i(0, 0))
     , board()
-    , turret_button(Button({ SCREEN_WIDTH / 2.f - 50.f, SCREEN_HEIGHT - 150.f }))
+    , turret_button(Button({ { SCREEN_WIDTH / 2.f - 50.f, SCREEN_HEIGHT - 150.f } }))
 {
 
     sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
+    settings.antialiasingLevel = ANTIALIAS_LEVEL;
 
     window.create(
         sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Iso Demo", sf::Style::Default, settings);
 
     auto const desktop = sf::VideoMode::getDesktopMode();
-    window.setPosition({ static_cast<int>(desktop.width / 2 - SCREEN_WIDTH / 2),
-        static_cast<int>(desktop.height / 2 - SCREEN_HEIGHT / 2) });
+    auto windowSize = window.getSize();
+    window.setPosition({ static_cast<int>(desktop.width / 2 - windowSize.x / 2),
+        static_cast<int>(desktop.height / 2 - windowSize.y / 2) });
 
     window.setFramerateLimit(TARGET_FPS);
 
-    std::cout << "Anti-Aliasing: " << (window.getSettings().antialiasingLevel ? "ON" : "OFF")
-              << "\n";
+    auto applied = window.getSettings();
+    std::cout << "Anti-Aliasing Level: " << applied.antialiasingLevel << "x\n";
 }
 
 void Engine::run()
